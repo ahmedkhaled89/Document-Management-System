@@ -1,10 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const UserRouter = require('./routers/UserRoutes');
 
 const app = express();
 app.use(express.json());
-
+app.use(UserRouter);
 const MONGODB_URL = process.env.MONGODB_URL;
 const MONGODB_URL_LOCAL = process.env.MONGODB_URL_LOCAL;
 
