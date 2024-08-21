@@ -10,7 +10,7 @@ const MONGODB_URL = process.env.MONGODB_URL;
 const MONGODB_URL_LOCAL = process.env.MONGODB_URL_LOCAL;
 
 mongoose
-  .connect(MONGODB_URL_LOCAL)
+  .connect(MONGODB_URL)
   .then(() => console.log('Connected to mongoDB'))
   .catch((error) => console.log(error.message));
 

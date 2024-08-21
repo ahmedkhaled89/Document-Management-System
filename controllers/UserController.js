@@ -1,7 +1,7 @@
 const User = require('../models/UserModel');
 const jwtGenerator = require('../utils/jwtGenerator');
 const hash = require('../utils/hash');
-const errorCatchingWrapper = require('../models/errorCatchingWrapper');
+const errorCatchingWrapper = require('../middlewares/errorCatchingWrapper');
 const comparePassword = require('../utils/comparePassword');
 
 const register = errorCatchingWrapper(async (req, res, next) => {
