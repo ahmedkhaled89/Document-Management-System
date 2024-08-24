@@ -11,7 +11,12 @@ workspaceRouter.post(
 );
 
 workspaceRouter
+  .route('/api/workspaces')
+  .get(WorkspaceController.getAllWorkspaces);
+
+workspaceRouter
   .route('/api/workspaces/:workspaceID')
-  .get(WorkspaceController.retrieveWorkspace);
+  .get(verifyToken, WorkspaceController.retrieveWorkspace)
+  .patch(verifyToken);
 
 module.exports = workspaceRouter;

@@ -14,6 +14,13 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
   res.status(201).json(createdWorkspace);
 });
 
+const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
+  const workspaces = await Workspace.find({}, { __v: 0 })
+    .populate('ownerID', 'nationalID firstName lastName -_id ')
+    .populate('DocumentsIDs');
+  res.status(200).json(workspaces);
+});
+
 const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspaceID = req.params.workspaceID;
   const workspace = await Workspace.findById(workspaceID).populate(
@@ -22,4 +29,4 @@ const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   res.status(200).json(workspace);
 });
 
-module.exports = { createWorkspace, retrieveWorkspace };
+module.exports = { createWorkspace, retrieveWorkspace, getAllWorkspaces };
