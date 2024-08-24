@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const Document = require('./DocumentModel');
+const Workspace = require('./WorkspaceModel');
 
-const UserSchema = new mongoose.Schema({
+const Schema = mongoose.Schema;
+const UserSchema = new Schema({
   firstName: {
     type: String,
     required: true,
@@ -27,6 +30,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Workspaces: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Workspace',
+    },
+  ],
 });
 
 const User = mongoose.model('User', UserSchema);
