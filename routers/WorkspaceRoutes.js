@@ -4,9 +4,10 @@ const WorkspaceController = require('../controllers/WorkspaceController');
 
 const workspaceRouter = express.Router();
 
+workspaceRouter.all('*', verifyToken);
+
 workspaceRouter.post(
   '/api/workspaces/createworkspace',
-  verifyToken,
   WorkspaceController.createWorkspace
 );
 
@@ -16,7 +17,6 @@ workspaceRouter
 
 workspaceRouter
   .route('/api/workspaces/:workspaceID')
-  .get(verifyToken, WorkspaceController.retrieveWorkspace)
-  .patch(verifyToken);
+  .get(WorkspaceController.retrieveWorkspace);
 
 module.exports = workspaceRouter;
