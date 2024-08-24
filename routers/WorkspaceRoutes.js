@@ -10,4 +10,8 @@ workspaceRouter.post(
   WorkspaceController.createWorkspace
 );
 
+workspaceRouter
+  .route('/api/workspaces/:workspaceID')
+  .get(WorkspaceController.retrieveWorkspace);
+
 module.exports = workspaceRouter;

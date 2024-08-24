@@ -14,4 +14,12 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
   res.status(201).json(createdWorkspace);
 });
 
-module.exports = { createWorkspace };
+const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
+  const workspaceID = req.params.workspaceID;
+  const workspace = await Workspace.findById(workspaceID).populate(
+    'DocumentsIDs'
+  );
+  res.status(200).json(workspace);
+});
+
+module.exports = { createWorkspace, retrieveWorkspace };
