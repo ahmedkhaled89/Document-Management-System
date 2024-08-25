@@ -4,12 +4,10 @@ const Schema = mongoose.Schema;
 const WorkspaceSchema = new Schema({
   name: { type: String, required: true },
   ownerID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  DocumentsIDs: [
+  DocsIDs: [
     {
-      DocumentID: {
-        type: Schema.Types.ObjectId,
-        ref: 'Document',
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'Doc',
     },
   ],
 });
