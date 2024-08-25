@@ -36,6 +36,12 @@ const UserSchema = new Schema({
       ref: 'Workspace',
     },
   ],
+  docsIDs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Doc',
+    },
+  ],
 });
 
 const User = mongoose.model('User', UserSchema);
