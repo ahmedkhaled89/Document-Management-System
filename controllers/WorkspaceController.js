@@ -21,6 +21,32 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   res.status(200).json(workspaces);
 });
 
+const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
+  const workspace = req.workspace;
+  workspace.set(req.body);
+  const updatedWorkspace = await workspace.save();
+  res.status(200).json(updatedWorkspace);
+});
+
+const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
+  const workspace = req.workspace;
+  const currentUser = req.currentUser;
+  const result = await Workspace.findByIdAndDelete(workspace._id);
+
+  console.log(currentUser.Workspaces);
+  currentUser.Workspaces = currentUser.Workspaces.filter(
+    (id) => id.toString() !== workspace._id.toString()
+  );
+  await User.findByIdAndUpdate(currentUser._id, {
+    $set: {
+      Workspaces: currentUser.Workspaces.filter(
+        (id) => id.toString() !== workspace._id.toString()
+      ),
+    },
+  });
+  res.status(200).json({ deletedWorkspace: result });
+});
+
 const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspaceID = req.params.workspaceID;
   const workspace = await Workspace.findById(workspaceID).populate(
@@ -29,4 +55,10 @@ const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   res.status(200).json(workspace);
 });
 
-module.exports = { createWorkspace, retrieveWorkspace, getAllWorkspaces };
+module.exports = {
+  createWorkspace,
+  retrieveWorkspace,
+  getAllWorkspaces,
+  updateWorkspace,
+  deleteWorkspace,
+};
