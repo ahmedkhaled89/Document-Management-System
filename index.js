@@ -19,7 +19,9 @@ mongoose
 const port = process.env.PORT || 4000;
 
 app.use((error, req, res, next) => {
-  res.status(500).json({ status: 'ERROR', message: error.message });
+  res
+    .status(error.status || 500)
+    .json({ status: 'ERROR', message: error.message });
 });
 
 app.listen(port, () => {
