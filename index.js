@@ -1,13 +1,18 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const UserRouter = require('./routers/UserRoutes');
 const workspaceRouter = require('./routers/WorkspaceRoutes');
+const docRoute = require('./routers/docRoutes');
 
 const app = express();
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(UserRouter);
 app.use(workspaceRouter);
+app.use(docRoute);
+
 const MONGODB_URL = process.env.MONGODB_URL;
 const MONGODB_URL_LOCAL = process.env.MONGODB_URL_LOCAL;
 
