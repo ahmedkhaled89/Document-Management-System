@@ -17,7 +17,7 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
 const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   const workspaces = await Workspace.find({}, { __v: 0 })
     .populate('ownerID', 'nationalID firstName lastName -_id ')
-    .populate('DocumentsIDs');
+    .populate('DocsIDs');
   res.status(200).json(workspaces);
 });
 
@@ -49,9 +49,7 @@ const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
 
 const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspaceID = req.params.workspaceID;
-  const workspace = await Workspace.findById(workspaceID).populate(
-    'DocumentsIDs'
-  );
+  const workspace = await Workspace.findById(workspaceID).populate('DocsIDs');
   res.status(200).json(workspace);
 });
 
