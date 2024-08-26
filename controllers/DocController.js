@@ -12,11 +12,17 @@ const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
   newDoc.destination = req.file.path;
   newDoc.docPath = req.file.path;
   const createdDoc = await newDoc.save();
-  owner.docs.push(createdDoc._id);
+  owner.docsIDs.push(createdDoc._id);
   await owner.save();
   workspace.DocsIDs.push(createdDoc._id);
   await workspace.save();
   res.status(201).json(createdDoc);
 });
 
-module.exports = { uploadDoc };
+const downloadDoc = errorCatchingWrapper(async (req, res, next) => {
+  const docID = req.params.docID;
+  const doc = await Doc.findById(docID);
+  res.status(200).download(doc.destination, doc.docName);
+});
+
+module.exports = { uploadDoc, downloadDoc };

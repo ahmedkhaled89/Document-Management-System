@@ -9,7 +9,6 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const fileName = `${Date.now()}-${file.originalname.replaceAll(' ', '-')}`;
-    console.log(file);
 
     cb(null, fileName);
   },
@@ -22,4 +21,5 @@ docRoute
   .route('/api/docs/upload')
   .post(verifyToken, upload.single('doc'), DocController.uploadDoc);
 
+docRoute.route('/api/docs/:docID').get(DocController.downloadDoc);
 module.exports = docRoute;
