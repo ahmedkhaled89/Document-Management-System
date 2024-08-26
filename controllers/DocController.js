@@ -28,4 +28,23 @@ const downloadDoc = errorCatchingWrapper(async (req, res, next) => {
   res.status(200).download(doc.destination, doc.docName);
 });
 
-module.exports = { uploadDoc, downloadDoc };
+const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
+  const docID = req.params.docID;
+  const updatedDoc = await Doc.findByIdAndUpdate(
+    docID,
+    { $set: { deleted: true } },
+    { new: true }
+  );
+  const workspace = await Workspace.findByIdAndUpdate(updatedDoc.workspaceID, {
+    $pull: { DocsIDs: updatedDoc._id },
+  });
+
+  const owner = await User.findByIdAndUpdate(updatedDoc.ownerID, {
+    $pull: { docsIDs: updatedDoc._id },
+  });
+  console.log(owner);
+
+  res.status(200).json({ updatedDoc });
+});
+
+module.exports = { uploadDoc, downloadDoc, softDeleteDoc };
