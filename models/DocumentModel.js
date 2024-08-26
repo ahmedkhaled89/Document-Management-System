@@ -11,6 +11,7 @@ const DocSchema = new Schema({
   },
   docPath: { type: String },
   originalname: { type: String },
+  deleted: { type: Boolean, default: false },
 });
 const Doc = mongoose.model('Doc', DocSchema);
 module.exports = Doc;
