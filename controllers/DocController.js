@@ -22,6 +22,9 @@ const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
 const downloadDoc = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
   const doc = await Doc.findById(docID);
+  if (doc.deleted) {
+    return res.status(404).json({ message: 'this document is deleted' });
+  }
   res.status(200).download(doc.destination, doc.docName);
 });
 
