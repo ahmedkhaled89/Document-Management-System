@@ -21,7 +21,9 @@ docRoute
   .route('/api/docs/upload')
   .post(verifyToken, upload.single('doc'), DocController.uploadDoc);
 
-docRoute.route('/api/docs/:docID').get(DocController.downloadDoc);
+docRoute.route('/api/docs/download/:docID').get(DocController.downloadDoc);
+
+docRoute.route('/api/docs/preview/:docID').get(DocController.getDocAsBase64);
 
 docRoute.route('/api/docs/delete/:docID').delete(DocController.softDeleteDoc);
 module.exports = docRoute;

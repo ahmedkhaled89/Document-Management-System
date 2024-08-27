@@ -2,6 +2,7 @@ const errorCatchingWrapper = require('../middlewares/errorCatchingWrapper');
 const Doc = require('../models/DocumentModel');
 const User = require('../models/UserModel');
 const Workspace = require('../models/WorkspaceModel');
+const fs = require('fs').promises;
 
 const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
   const workspace = await Workspace.findById(req.body.workspaceID);
@@ -39,4 +40,15 @@ const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
   res.status(200).json({ updatedDoc });
 });
 
-module.exports = { uploadDoc, downloadDoc, softDeleteDoc };
+const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
+  const docID = req.params.docID;
+  const doc = await Doc.findById(docID);
+  if (doc.deleted) {
+    return res.status(404).json({ message: 'this document is deleted' });
+  }
+  const destination = doc.destination;
+  const encodedDoc = await fs.readFile(destination, { encoding: 'base64' });
+
+  res.json({ encodedDoc });
+});
+module.exports = { uploadDoc, downloadDoc, softDeleteDoc, getDocAsBase64 };
