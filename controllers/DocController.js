@@ -51,4 +51,17 @@ const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
 
   res.json({ encodedDoc });
 });
-module.exports = { uploadDoc, downloadDoc, softDeleteDoc, getDocAsBase64 };
+
+const getDoc = errorCatchingWrapper(async (req, res, next) => {
+  const docID = req.params.docID;
+  const doc = await Doc.findById(docID);
+  res.json({ doc });
+});
+
+module.exports = {
+  uploadDoc,
+  downloadDoc,
+  softDeleteDoc,
+  getDocAsBase64,
+  getDoc,
+};
