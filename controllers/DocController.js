@@ -35,14 +35,6 @@ const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
     { $set: { deleted: true } },
     { new: true }
   );
-  const workspace = await Workspace.findByIdAndUpdate(updatedDoc.workspaceID, {
-    $pull: { DocsIDs: updatedDoc._id },
-  });
-
-  const owner = await User.findByIdAndUpdate(updatedDoc.ownerID, {
-    $pull: { docsIDs: updatedDoc._id },
-  });
-  console.log(owner);
 
   res.status(200).json({ updatedDoc });
 });
