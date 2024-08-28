@@ -64,6 +64,18 @@ const updateDoc = errorCatchingWrapper(async (req, res, next) => {
   res.json({ doc });
 });
 
+const searchDoc = errorCatchingWrapper(async (req, res, next) => {
+  const name = req.query.name;
+  const type = req.query.type;
+  const result = await Doc.find({
+    $or: [
+      { docName: { $regex: name, $options: 'i' } },
+      { docType: { $regex: type, $options: 'i' } },
+    ],
+  });
+  res.json({ result });
+});
+
 module.exports = {
   uploadDoc,
   downloadDoc,
@@ -71,4 +83,5 @@ module.exports = {
   getDocAsBase64,
   getDoc,
   updateDoc,
+  searchDoc,
 };

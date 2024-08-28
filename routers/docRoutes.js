@@ -25,6 +25,8 @@ docRoute.route('/api/docs/download/:docID').get(DocController.downloadDoc);
 
 docRoute.route('/api/docs/preview/:docID').get(DocController.getDocAsBase64);
 
+docRoute.route('/api/docs/search').get(DocController.searchDoc);
+
 docRoute
   .route('/api/docs/:docID')
   .get(DocController.getDoc)
