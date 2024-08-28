@@ -58,10 +58,17 @@ const getDoc = errorCatchingWrapper(async (req, res, next) => {
   res.json({ doc });
 });
 
+const updateDoc = errorCatchingWrapper(async (req, res, next) => {
+  const docID = req.params.docID;
+  const doc = await Doc.findByIdAndUpdate(docID, req.body, { new: true });
+  res.json({ doc });
+});
+
 module.exports = {
   uploadDoc,
   downloadDoc,
   softDeleteDoc,
   getDocAsBase64,
   getDoc,
+  updateDoc,
 };
