@@ -3,18 +3,30 @@ const jwtGenerator = require('../utils/jwtGenerator');
 const hash = require('../utils/hash');
 const errorCatchingWrapper = require('../middlewares/errorCatchingWrapper');
 const comparePassword = require('../utils/comparePassword');
+const { validationResult } = require('express-validator');
 
 const register = errorCatchingWrapper(async (req, res, next) => {
-  const { password, email } = req.body;
+  const { firstName, lastName, nationalID, password, email } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   const hashedPassword = await hash(password);
-  const newUser = new User({ ...req.body, password: hashedPassword });
+  const newUser = new User({
+    firstName,
+    lastName,
+    nationalID,
+    email,
+    password: hashedPassword,
+  });
   const token = jwtGenerator(
     { _id: newUser._id, email: email },
     process.env.SECRET_KEY
   );
   newUser.token = token;
-  await newUser.save();
-  res.status(201).json(newUser);
+  const user = await newUser.save();
+  if (!user) return next(new Error('Fail to register user'));
+  res.status(201).json({ token: user.token });
 });
 
 const login = errorCatchingWrapper(async (req, res, next) => {
