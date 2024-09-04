@@ -6,9 +6,11 @@ const UserRouter = require('./routers/UserRoutes');
 const workspaceRouter = require('./routers/WorkspaceRoutes');
 const docRoute = require('./routers/docRoutes');
 const verifyToken = require('./middlewares/verifyUser');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 app.use(
   '/uploads',
   verifyToken,
