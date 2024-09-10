@@ -17,7 +17,8 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
 const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   const workspaces = await Workspace.find({}, { __v: 0 })
     .populate('ownerID', 'nationalID firstName lastName -_id ')
-    .populate('DocsIDs');
+    .populate('DocsIDs')
+    .populate('ownerID');
   res.status(200).json(workspaces);
 });
 
