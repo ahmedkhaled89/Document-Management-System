@@ -19,9 +19,12 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
     .populate('ownerID', 'nationalID firstName lastName -_id ')
     .populate({
       path: 'DocsIDs',
-      match: { deleted: { $eq: false, $exists: true } },
+      match: {
+        deleted: { $eq: false, $exists: true },
+        updatedAt: { $exists: true },
+      },
+      options: { sort: { updatedAt: 'desc' } },
     });
-  // .populate('ownerID');
   res.status(200).json(workspaces);
 });
 
