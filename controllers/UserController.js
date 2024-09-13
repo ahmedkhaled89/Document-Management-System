@@ -43,7 +43,14 @@ const register = errorCatchingWrapper(async (req, res, next) => {
   newUser.token = token;
   const user = await newUser.save();
   if (!user) return next(new Error('Fail to register user'));
-  res.status(201).json({ token: user.token });
+  res.status(201).json({
+    token,
+    email,
+    firstName,
+    lastName,
+    nationalID,
+    _id: user._id,
+  });
 });
 
 const login = errorCatchingWrapper(async (req, res, next) => {
@@ -57,12 +64,13 @@ const login = errorCatchingWrapper(async (req, res, next) => {
     return res.status(400).json({ status: 'FAIL', error: 'invalid Password' });
   }
   user.token = jwtGenerator({ _id: user._id, email }, process.env.SECRET_KEY);
-  res.json({
+  res.status(200).json({
     email,
     firstName: user.firstName,
     lastName: user.lastName,
-    NID: user.nationalID,
+    nationalID: user.nationalID,
     token: user.token,
+    _id: user._id,
   });
 });
 module.exports = { register, login };
