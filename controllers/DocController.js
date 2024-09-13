@@ -7,6 +7,12 @@ const fs = require('fs').promises;
 const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
   const workspace = await Workspace.findById(req.body.workspaceID);
   const owner = await User.findById(req.userCredentials._id);
+  if (!owner || !workspace || !req.file) {
+    return res
+      .status(400)
+      .json({ status: 'FAIL', error: 'All fields are required' });
+  }
+
   const newDoc = new Doc({ ownerID: owner._id, workspaceID: workspace._id });
   newDoc.docName = req.file.filename;
   newDoc.docType = req.file.mimetype;
@@ -23,8 +29,8 @@ const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
 const downloadDoc = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
   const doc = await Doc.findById(docID);
-  if (doc.deleted) {
-    return res.status(404).json({ message: 'this document is deleted' });
+  if (!doc || doc.deleted) {
+    return res.status(404).json({ message: 'this document does NOT exist' });
   }
   res.status(200).download(doc.destination, doc.docName);
 });
@@ -36,7 +42,11 @@ const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
     { $set: { deleted: true } },
     { new: true }
   );
-
+  if (!updateDoc) {
+    return res
+      .status(404)
+      .json({ status: 'FAIL', error: 'this doc does not exist' });
+  }
   res.status(200).json({ updatedDoc });
 });
 
@@ -44,10 +54,10 @@ const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
   const doc = await Doc.findById(docID);
   if (doc.deleted) {
-    return res.status(404).json({ message: 'this document is deleted' });
+    return res.status(404).json({ message: 'this document does not exist' });
   }
-  const destination = doc.destination;
-  const encodedDoc = await fs.readFile(destination, { encoding: 'base64' });
+  const docPath = doc.docPath;
+  const encodedDoc = await fs.readFile(docPath, { encoding: 'base64' });
 
   res.json({ encodedDoc });
 });
@@ -55,6 +65,9 @@ const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
 const getDoc = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
   const doc = await Doc.findById(docID);
+  if (!doc || doc.deleted) {
+    return res.status(404).json({ message: 'this document does not exist' });
+  }
   res.json({ doc });
 });
 
