@@ -33,7 +33,7 @@ const port = process.env.PORT || 4000;
 app.use((error, req, res, next) => {
   res
     .status(error.status || 500)
-    .json({ status: 'ERROR', message: error.message });
+    .json({ status: 'ERROR', error: error.message });
 });
 
 app.listen(port, () => {
