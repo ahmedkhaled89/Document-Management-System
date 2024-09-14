@@ -16,7 +16,7 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
 
 const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   const workspaces = await Workspace.find({}, { __v: 0 })
-    .populate('ownerID', 'nationalID firstName lastName -_id ')
+    .populate('ownerID', 'nationalID firstName lastName _id email')
     .populate({
       path: 'DocsIDs',
       match: {
@@ -25,7 +25,7 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
       },
       options: { sort: { updatedAt: 'desc' } },
     });
-  res.status(200).json(workspaces);
+  res.status(200).json({ workspaces });
 });
 
 const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
