@@ -15,17 +15,21 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
 });
 
 const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
-  const workspaces = await Workspace.find({}, { __v: 0 })
-    .populate('ownerID', 'nationalID firstName lastName _id email')
-    .populate({
-      path: 'DocsIDs',
-      match: {
-        deleted: { $eq: false, $exists: true },
-        updatedAt: { $exists: true },
-      },
-      options: { sort: { updatedAt: 'desc' } },
-    });
-  res.status(200).json({ workspaces });
+  try {
+    const workspaces = await Workspace.find({}, { __v: 0 })
+      .populate('ownerID', 'nationalID firstName lastName _id email')
+      .populate({
+        path: 'DocsIDs',
+        match: {
+          deleted: { $eq: false, $exists: true },
+          updatedAt: { $exists: true },
+        },
+        options: { sort: { updatedAt: 'desc' } },
+      });
+    res.status(200).json({ workspaces });
+  } catch (error) {
+    return res.status(400).json({ error: 'Cant find workspaces' });
+  }
 });
 
 const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
