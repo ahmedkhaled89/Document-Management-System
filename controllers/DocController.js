@@ -47,7 +47,7 @@ const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
       .status(404)
       .json({ status: 'FAIL', error: 'this doc does not exist' });
   }
-  res.status(200).json({ updatedDoc });
+  res.status(200).json({ status: 'Document Deleted Successfully', updatedDoc });
 });
 
 const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
