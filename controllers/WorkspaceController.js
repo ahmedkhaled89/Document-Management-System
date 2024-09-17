@@ -42,7 +42,9 @@ const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
 const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspace = req.workspace;
   const currentUser = req.currentUser;
-  const result = await Workspace.findByIdAndDelete(workspace._id);
+  const result = await Workspace.findByIdAndUpdate(workspace._id, {
+    deleted: true,
+  });
 
   console.log(currentUser.Workspaces);
   currentUser.Workspaces = currentUser.Workspaces.filter(
