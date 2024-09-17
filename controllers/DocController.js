@@ -5,6 +5,8 @@ const Workspace = require('../models/WorkspaceModel');
 const fs = require('fs').promises;
 
 const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
+  console.log(req.file);
+
   const workspace = await Workspace.findById(req.body.workspaceID);
   const owner = await User.findById(req.userCredentials._id);
   if (!owner || !workspace || !req.file) {
@@ -18,12 +20,13 @@ const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
   newDoc.docType = req.file.mimetype;
   newDoc.destination = req.file.path;
   newDoc.docPath = req.file.path;
+  newDoc.extension = req.file.extension;
   const createdDoc = await newDoc.save();
   owner.docsIDs.push(createdDoc._id);
   await owner.save();
   workspace.DocsIDs.push(createdDoc._id);
   await workspace.save();
-  res.status(201).json(createdDoc);
+  res.status(201).json({ status: 'uploaded SUCCESSFULLY', createdDoc });
 });
 
 const downloadDoc = errorCatchingWrapper(async (req, res, next) => {
