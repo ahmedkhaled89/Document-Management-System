@@ -10,6 +10,7 @@ const WorkspaceSchema = new Schema({
       ref: 'Doc',
     },
   ],
+  deleted: { type: Boolean, default: false },
 });
 
 WorkspaceSchema.index({ ownerID: 1, name: 1 }, { unique: true });
