@@ -9,6 +9,9 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const fileName = `${Date.now()}-${file.originalname.replaceAll(' ', '-')}`;
+    const spitedFN = file.originalname.split('.');
+    const extension = spitedFN[spitedFN.length - 1];
+    file.extension = extension;
 
     cb(null, fileName);
   },
