@@ -60,8 +60,16 @@ const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
 
 const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspaceID = req.params.workspaceID;
-  const workspace = await Workspace.findById(workspaceID).populate('DocsIDs');
-  res.status(200).json(workspace);
+  if (!workspaceID) {
+    return res.status(400).json({ error: `No workspace ID` });
+  }
+  const workspace = await Workspace.findById(workspaceID)
+    .populate('DocsIDs')
+    .populate('ownerID');
+  if (!workspace) {
+    return res.status(404).json({ error: `Workspace Does Not Exist` });
+  }
+  res.status(200).json({ status: 'SUCCESS', workspace });
 });
 
 module.exports = {
