@@ -16,7 +16,7 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
 
 const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   try {
-    const workspaces = await Workspace.find({}, { __v: 0 })
+    const workspaces = await Workspace.find({ deleted: false }, { __v: 0 })
       .populate('ownerID', 'nationalID firstName lastName _id email')
       .populate({
         path: 'DocsIDs',
@@ -65,7 +65,8 @@ const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   if (!workspaceID) {
     return res.status(400).json({ error: `No workspace ID` });
   }
-  const workspace = await Workspace.findById(workspaceID)
+  const workspace = await Workspace.findById(workspaceID, {})
+    .where({ deleted: false })
     .populate('DocsIDs')
     .populate('ownerID');
   if (!workspace) {
