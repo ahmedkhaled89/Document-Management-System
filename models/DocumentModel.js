@@ -13,6 +13,7 @@ const DocSchema = new Schema(
     docPath: { type: String },
     originalname: { type: String },
     deleted: { type: Boolean, default: false },
+    extension: { type: String, required: true },
   },
   { timestamps: true }
 );
