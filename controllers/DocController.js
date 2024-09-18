@@ -81,12 +81,11 @@ const updateDoc = errorCatchingWrapper(async (req, res, next) => {
 });
 
 const searchDoc = errorCatchingWrapper(async (req, res, next) => {
-  const name = req.query.name;
-  const type = req.query.type;
+  const q = req.query.q;
   const result = await Doc.find({
     $or: [
-      { docName: { $regex: name, $options: 'i' } },
-      { docType: { $regex: type, $options: 'i' } },
+      { docName: { $regex: q, $options: 'i' } },
+      { docType: { $regex: q, $options: 'i' } },
     ],
   });
   res.json({ result });
