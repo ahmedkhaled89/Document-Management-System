@@ -62,7 +62,7 @@ const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
   const docPath = doc.docPath;
   const encodedDoc = await fs.readFile(docPath, { encoding: 'base64' });
 
-  res.json({ encodedDoc });
+  res.json({ base64String: encodedDoc, extension: doc.extension });
 });
 
 const getDoc = errorCatchingWrapper(async (req, res, next) => {
