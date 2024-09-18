@@ -65,9 +65,18 @@ const retrieveWorkspace = errorCatchingWrapper(async (req, res, next) => {
   if (!workspaceID) {
     return res.status(400).json({ error: `No workspace ID` });
   }
+
   const workspace = await Workspace.findById(workspaceID, {})
     .where({ deleted: false })
-    .populate('DocsIDs')
+    .populate({
+      path: 'DocsIDs',
+
+      match: {
+        deleted: { $eq: false, $exists: true },
+        updatedAt: { $exists: true },
+      },
+      options: { sort: { updatedAt: 'desc' } },
+    })
     .populate('ownerID');
   if (!workspace) {
     return res.status(404).json({ error: `Workspace Does Not Exist` });
