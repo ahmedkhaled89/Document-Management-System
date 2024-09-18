@@ -56,7 +56,7 @@ const softDeleteDoc = errorCatchingWrapper(async (req, res, next) => {
 const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
   const doc = await Doc.findById(docID);
-  if (doc.deleted) {
+  if (!doc || doc.deleted) {
     return res.status(404).json({ message: 'this document does not exist' });
   }
   const docPath = doc.docPath;
