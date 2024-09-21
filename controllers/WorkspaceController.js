@@ -7,6 +7,9 @@ const createWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const currentUser = await User.findById(userCredentials._id);
   const ownerID = currentUser._id;
   const name = req.body.name;
+  if (!name || !userCredentials || !currentUser) {
+    return res.status(400).json({ error: 'Can not Create WS!' });
+  }
   const newWorkspace = new Workspace({ name, ownerID });
   const createdWorkspace = await newWorkspace.save();
   currentUser.Workspaces.push(createdWorkspace._id);
@@ -34,9 +37,9 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
 
 const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspace = req.workspace;
-  workspace.set(req.body);
+  workspace.set({ name: req.body });
   const updatedWorkspace = await workspace.save();
-  res.status(200).json(updatedWorkspace);
+  res.status(200).json({ updatedWorkspace });
 });
 
 const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
