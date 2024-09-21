@@ -12,6 +12,9 @@ const verifyWorkspaceOwner = errorCatchingWrapper(async (req, res, next) => {
   const userCredentials = req.userCredentials;
   const currentUserID = userCredentials._id;
   const currentUser = await User.findById(currentUserID);
+  if (!currentUser) {
+    return res.status(400).json({ error: 'No user' });
+  }
   if (currentUserID !== workspace.ownerID.toString()) {
     const error = new Error('Unauthorized');
     error.status = 403;
