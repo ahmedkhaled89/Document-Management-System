@@ -5,8 +5,6 @@ const Workspace = require('../models/WorkspaceModel');
 const fs = require('fs').promises;
 
 const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
-  console.log(req.file);
-
   const workspace = await Workspace.findById(req.body.workspaceID);
   const owner = await User.findById(req.userCredentials._id);
   if (!owner || !workspace || !req.file) {
@@ -106,7 +104,6 @@ const updateDoc = errorCatchingWrapper(async (req, res, next) => {
 const searchDoc = errorCatchingWrapper(async (req, res, next) => {
   const q = req.query.q;
   const queries = q.split(' ');
-  console.log(queries);
 
   const regexConditions = queries.map((q) => ({
     $or: [

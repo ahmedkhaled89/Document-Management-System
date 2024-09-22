@@ -49,7 +49,6 @@ const deleteWorkspace = errorCatchingWrapper(async (req, res, next) => {
     deleted: true,
   });
 
-  console.log(currentUser.Workspaces);
   currentUser.Workspaces = currentUser.Workspaces.filter(
     (id) => id.toString() !== workspace._id.toString()
   );
