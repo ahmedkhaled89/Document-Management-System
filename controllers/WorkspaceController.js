@@ -37,7 +37,7 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
 
 const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspace = req.workspace;
-  workspace.set({ name: req.body });
+  workspace.set({ name: req.body.name });
   const updatedWorkspace = await workspace.save();
   res.status(200).json({ updatedWorkspace });
 });
