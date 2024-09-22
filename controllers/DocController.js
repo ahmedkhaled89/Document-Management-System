@@ -80,8 +80,27 @@ const getDoc = errorCatchingWrapper(async (req, res, next) => {
 
 const updateDoc = errorCatchingWrapper(async (req, res, next) => {
   const docID = req.params.docID;
-  const doc = await Doc.findByIdAndUpdate(docID, req.body, { new: true });
-  res.json({ doc });
+
+  const workspace = await Workspace.findById(req.body.workspaceID);
+  const owner = await User.findById(req.userCredentials._id);
+  if (!owner || !workspace || !req.file) {
+    return res
+      .status(400)
+      .json({ status: 'FAIL', error: 'All fields are required' });
+  }
+
+  const doc = await Doc.findByIdAndUpdate(
+    docID,
+    {
+      docName: req.file.filename,
+      docType: req.file.mimetype,
+      destination: req.file.path,
+      docPath: req.file.path,
+      extension: req.file.extension,
+    },
+    { new: true }
+  );
+  res.json({ updatedDoc: doc });
 });
 
 const searchDoc = errorCatchingWrapper(async (req, res, next) => {
