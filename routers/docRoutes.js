@@ -33,7 +33,7 @@ docRoute.route('/api/docs/search').get(DocController.searchDoc);
 docRoute
   .route('/api/docs/:docID')
   .get(DocController.getDoc)
-  .patch(DocController.updateDoc);
+  .patch(upload.single('doc'), DocController.updateDoc);
 
 docRoute.route('/api/docs/delete/:docID').delete(DocController.softDeleteDoc);
 module.exports = docRoute;
