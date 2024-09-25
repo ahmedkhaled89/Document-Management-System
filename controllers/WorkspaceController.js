@@ -36,6 +36,31 @@ const getAllWorkspaces = errorCatchingWrapper(async (req, res, next) => {
   }
 });
 
+const getUserWorkspaces = errorCatchingWrapper(async (req, res, next) => {
+  const ownerID = req.userCredentials._id;
+
+  try {
+    const workspaces = await Workspace.find(
+      { ownerID, deleted: false },
+      { __v: 0 }
+    )
+      .sort({ createdAt: 'desc' })
+      .populate('ownerID', 'nationalID firstName lastName _id email')
+      .populate({
+        path: 'DocsIDs',
+        match: {
+          ownerID,
+          deleted: { $eq: false, $exists: true },
+          updatedAt: { $exists: true },
+        },
+        options: { sort: { updatedAt: 'desc' } },
+      });
+    res.status(200).json({ workspaces });
+  } catch (error) {
+    return res.status(400).json({ error: 'Cant find workspaces' });
+  }
+});
+
 const updateWorkspace = errorCatchingWrapper(async (req, res, next) => {
   const workspace = req.workspace;
   workspace.set({ name: req.body.name });
@@ -93,4 +118,5 @@ module.exports = {
   getAllWorkspaces,
   updateWorkspace,
   deleteWorkspace,
+  getUserWorkspaces,
 };
