@@ -2,6 +2,7 @@ const errorCatchingWrapper = require('../middlewares/errorCatchingWrapper');
 const Doc = require('../models/DocumentModel');
 const User = require('../models/UserModel');
 const Workspace = require('../models/WorkspaceModel');
+const { convertToBase64 } = require('../utils/convertToBase64');
 const fs = require('fs').promises;
 
 const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
@@ -12,8 +13,13 @@ const uploadDoc = errorCatchingWrapper(async (req, res, next) => {
       .status(400)
       .json({ status: 'FAIL', error: 'All fields are required' });
   }
+  const base64 = await convertToBase64(req.file.path);
 
-  const newDoc = new Doc({ ownerID: owner._id, workspaceID: workspace._id });
+  const newDoc = new Doc({
+    ownerID: owner._id,
+    workspaceID: workspace._id,
+    base64,
+  });
   newDoc.docName = req.file.filename;
   newDoc.docType = req.file.mimetype;
   newDoc.destination = req.file.path;
@@ -58,12 +64,14 @@ const getDocAsBase64 = errorCatchingWrapper(async (req, res, next) => {
     return res.status(404).json({ message: 'this document does not exist' });
   }
   const docPath = doc.docPath;
-  const encodedDoc = await fs.readFile(docPath, { encoding: 'base64' });
+  // const encodedDoc = await fs.readFile(docPath, { encoding: 'base64' });
 
   res.json({
-    base64String: encodedDoc,
+    base64String: doc.base64,
     extension: doc.extension,
     type: doc.docType,
+    docName: doc.docName,
+    originalname: doc.originalname,
   });
 });
 
@@ -86,6 +94,8 @@ const updateDoc = errorCatchingWrapper(async (req, res, next) => {
       .status(400)
       .json({ status: 'FAIL', error: 'All fields are required' });
   }
+
+  const base64 = await convertToBase64(req.file.path);
 
   const doc = await Doc.findByIdAndUpdate(
     docID,
