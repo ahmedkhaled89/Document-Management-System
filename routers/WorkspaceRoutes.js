@@ -17,6 +17,9 @@ workspaceRouter
   .get(WorkspaceController.getAllWorkspaces);
 
 workspaceRouter
+  .route('/api/workspaces/user/')
+  .get(verifyToken, WorkspaceController.getUserWorkspaces);
+workspaceRouter
   .route('/api/workspaces/:workspaceID')
   .get(WorkspaceController.retrieveWorkspace)
   .patch(verifyWorkspaceOwner, WorkspaceController.updateWorkspace)
