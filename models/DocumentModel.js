@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const DocSchema = new Schema(
   {
+    base64: { type: String, required: true },
     docName: { type: String, required: true, default: 'TEST Doc' },
     docType: { type: String, required: true, default: 'pdf' },
     ownerID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
