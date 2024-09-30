@@ -113,7 +113,8 @@ const searchDoc = errorCatchingWrapper(async (req, res, next) => {
   }));
   const result = await Doc.find({
     $or: regexConditions,
-  }).where({ deleted: false });
+    deleted: false,
+  });
   res.json({ result });
 });
 
